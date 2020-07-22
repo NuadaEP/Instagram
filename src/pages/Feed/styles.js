@@ -8,6 +8,9 @@ export const Avatar = styled.Image``;
 
 export const Name = styled.Text``;
 
-export const PostImage = styled.Image``;
+export const PostImage = styled.Image`
+  width: 100%;
+  aspect-ratio: ${({ratio}) => ratio};
+`;
 
 export const Description = styled.Text``;
