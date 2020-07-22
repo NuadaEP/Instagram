@@ -8,17 +8,24 @@ import {Post, Header, Avatar, Name, PostImage, Description} from './styles';
 function Feed() {
   const [feed, setFeed] = useState([]);
   const [page, setPage] = useState(1);
+  const [total, setTotal] = useState(0);
 
   const loadPage = useCallback(
     async (pageNumber = page, shoudRefresh) => {
-      const {data} = await api.get(
+      if (total && pageNumber > total) {
+        return;
+      }
+
+      const response = await api.get(
         `/feed?_expand=author&_limit=5&_page=${pageNumber}`,
       );
+      const totalItems = response.headers['x-total-count'];
 
-      setFeed([...feed, ...data]);
+      setTotal(Math.floor(totalItems / 5));
+      setFeed([...feed, ...response.data]);
       setPage(pageNumber + 1);
     },
-    [page, setPage, setFeed, feed],
+    [page, setPage, setFeed, feed, total, setTotal],
   );
 
   const renderItem = useCallback(
