@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect, useCallback} from 'react';
 import {View, FlatList} from 'react-native';
 
 import api from '~/services/api';
@@ -7,15 +7,19 @@ import {Post, Header, Avatar, Name, PostImage, Description} from './styles';
 
 function Feed() {
   const [feed, setFeed] = useState([]);
+  const [page, setPage] = useState(1);
+
+  async function loadPage(pageNumber = page, shoudRefresh) {
+    const {data} = await api.get(
+      `/feed?_expand=author&_limit=5&_page=${pageNumber}`,
+    );
+
+    setFeed([...feed, ...data]);
+    setPage(pageNumber + 1);
+  }
 
   useEffect(() => {
-    async function loadFeed() {
-      const response = await api.get('/feed?_expand=author&_limit=5&_page=1');
-
-      setFeed(response.data);
-    }
-
-    loadFeed();
+    loadPage();
   }, []);
 
   return (
@@ -23,6 +27,8 @@ function Feed() {
       <FlatList
         data={feed}
         keyExtractor={(post) => String(post.id)}
+        onEndReached={() => loadPage()}
+        onEndReachedThreshold={0.1}
         renderItem={({item}) => (
           <Post>
             <Header>
