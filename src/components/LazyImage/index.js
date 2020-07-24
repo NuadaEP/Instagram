@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect, useCallback} from 'react';
 import {Animated} from 'react-native';
 
 import {Small, Original} from './styles';
@@ -17,13 +17,13 @@ function LazyImage({smallSource, source, aspectRatio, shouldLoad}) {
     }
   }, [shouldLoad]);
 
-  function handleAnimate() {
+  const handleAnimate = useCallback(() => {
     Animated.timing(opacity, {
       toValue: 1,
       duration: 500,
       useNativeDriver: true,
     }).start();
-  }
+  }, [opacity]);
 
   return (
     <Small
