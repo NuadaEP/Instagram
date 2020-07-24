@@ -1,6 +1,11 @@
 import styled from 'styled-components/native';
 
-export const Small = styled.Image`
+export const Small = styled.ImageBackground`
+  width: 100%;
+  aspect-ratio: ${({ratio}) => ratio};
+`;
+
+export const Original = styled.Image`
   width: 100%;
   aspect-ratio: ${({ratio}) => ratio};
 `;

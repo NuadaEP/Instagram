@@ -1,6 +1,6 @@
 import React from 'react';
 
-import {Small} from './styles';
+import {Small, Original} from './styles';
 
 function LazyImage({smallSource, source, aspectRatio}) {
   return (
@@ -8,8 +8,14 @@ function LazyImage({smallSource, source, aspectRatio}) {
       source={smallSource}
       ratio={aspectRatio}
       resizeMode="contain"
-      blurRadius={2}
-    />
+      blurRadius={2}>
+      <Original
+        source={source}
+        ratio={aspectRatio}
+        resizeMode="contain"
+        resizeMode="contain"
+      />
+    </Small>
   );
 }
 
