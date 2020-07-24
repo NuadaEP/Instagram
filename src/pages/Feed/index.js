@@ -3,18 +3,29 @@ import {View, FlatList} from 'react-native';
 
 import api from '~/services/api';
 
-import {Post, Header, Avatar, Name, PostImage, Description} from './styles';
+import {
+  Post,
+  Header,
+  Avatar,
+  Name,
+  PostImage,
+  Description,
+  Loading,
+} from './styles';
 
 function Feed() {
   const [feed, setFeed] = useState([]);
   const [page, setPage] = useState(1);
   const [total, setTotal] = useState(0);
+  const [loading, setLoading] = useState(false);
 
   const loadPage = useCallback(
     async (pageNumber = page, shoudRefresh) => {
       if (total && pageNumber > total) {
         return;
       }
+
+      setLoading(true);
 
       const response = await api.get(
         `/feed?_expand=author&_limit=5&_page=${pageNumber}`,
@@ -24,8 +35,9 @@ function Feed() {
       setTotal(Math.floor(totalItems / 5));
       setFeed([...feed, ...response.data]);
       setPage(pageNumber + 1);
+      setLoading(false);
     },
-    [page, setPage, setFeed, feed, total, setTotal],
+    [page, setPage, setFeed, feed, total, setTotal, setLoading],
   );
 
   const renderItem = useCallback(
@@ -57,6 +69,7 @@ function Feed() {
         keyExtractor={(post) => String(post.id)}
         onEndReached={() => loadPage()}
         onEndReachedThreshold={0.1}
+        ListFooterComponent={loading && <Loading />}
         renderItem={renderItem}
       />
     </View>
