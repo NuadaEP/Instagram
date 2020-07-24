@@ -1,8 +1,12 @@
 import React, {useState, useEffect} from 'react';
+import {Animated} from 'react-native';
 
 import {Small, Original} from './styles';
 
+const OrigianlAnimated = Animated.createAnimatedComponent(Original);
+
 function LazyImage({smallSource, source, aspectRatio}) {
+  const opacity = new Animated.Value(0);
   const [loaded, setLoaded] = useState(false);
 
   useEffect(() => {
@@ -11,7 +15,13 @@ function LazyImage({smallSource, source, aspectRatio}) {
     }, 1000);
   }, []);
 
-  function handleAnimate() {}
+  function handleAnimate() {
+    Animated.timing(opacity, {
+      toValue: 1,
+      duration: 500,
+      useNativeDriver: true,
+    }).start();
+  }
 
   return (
     <Small
@@ -20,7 +30,8 @@ function LazyImage({smallSource, source, aspectRatio}) {
       resizeMode="contain"
       blurRadius={2}>
       {loaded && (
-        <Original
+        <OrigianlAnimated
+          style={{opacity}}
           source={source}
           ratio={aspectRatio}
           resizeMode="contain"
