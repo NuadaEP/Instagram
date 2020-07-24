@@ -88,6 +88,9 @@ function Feed() {
         onRefresh={refreshList}
         refreshing={refreshing}
         onViewableItemsChanged={handleViewableChanged}
+        viewabilityConfig={{
+          viewAreaCoveragePercentThreshold: 20,
+        }}
         ListFooterComponent={loading && <Loading />}
         renderItem={renderItem}
       />
