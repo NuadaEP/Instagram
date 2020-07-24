@@ -10,10 +10,14 @@ import Feed from '~/pages/Feed';
 const Routes = createAppContainer(
   createStackNavigator(
     {
-      Feed,
+      Feed: {
+        screen: Feed,
+        navigationOptions: {
+          headerTitleAlign: 'center',
+        },
+      },
     },
     {
-      headerLayoutPreset: 'center',
       defaultNavigationOptions: {
         headerTitle: <Image source={logo} />,
         headerStyle: {

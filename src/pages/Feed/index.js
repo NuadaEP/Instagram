@@ -18,9 +18,10 @@ function Feed() {
   const [page, setPage] = useState(1);
   const [total, setTotal] = useState(0);
   const [loading, setLoading] = useState(false);
+  const [refreshing, setRefreshing] = useState(false);
 
   const loadPage = useCallback(
-    async (pageNumber = page, shoudRefresh) => {
+    async (pageNumber = page, shoudRefresh = false) => {
       if (total && pageNumber > total) {
         return;
       }
@@ -33,7 +34,7 @@ function Feed() {
       const totalItems = response.headers['x-total-count'];
 
       setTotal(Math.floor(totalItems / 5));
-      setFeed([...feed, ...response.data]);
+      setFeed(shoudRefresh ? response.data : [...feed, ...response.data]);
       setPage(pageNumber + 1);
       setLoading(false);
     },
@@ -58,6 +59,14 @@ function Feed() {
     [],
   );
 
+  const refreshList = useCallback(async () => {
+    setRefreshing(true);
+
+    await loadPage(1, true);
+
+    setRefreshing(false);
+  }, [setRefreshing, loadPage]);
+
   useEffect(() => {
     loadPage();
   }, []);
@@ -69,6 +78,8 @@ function Feed() {
         keyExtractor={(post) => String(post.id)}
         onEndReached={() => loadPage()}
         onEndReachedThreshold={0.1}
+        onRefresh={refreshList}
+        refreshing={refreshing}
         ListFooterComponent={loading && <Loading />}
         renderItem={renderItem}
       />
