@@ -13,6 +13,7 @@ function Feed() {
   const [total, setTotal] = useState(0);
   const [loading, setLoading] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
+  const [viewable, setViewable] = useState([]);
 
   const loadPage = useCallback(
     async (pageNumber = page, shoudRefresh = false) => {
@@ -35,6 +36,13 @@ function Feed() {
     [page, setPage, setFeed, feed, total, setTotal, setLoading],
   );
 
+  const handleViewableChanged = useCallback(
+    ({changed}) => {
+      setViewable(changed.map(({item}) => item.id));
+    },
+    [setViewable],
+  );
+
   const renderItem = useCallback(
     ({item}) => (
       <Post>
@@ -44,6 +52,7 @@ function Feed() {
         </Header>
 
         <LazyImge
+          shouldLoad={viewable.includes(item.id)}
           aspectRatio={item.aspectRatio}
           source={{uri: item.image}}
           smallSource={{uri: item.small}}
@@ -54,7 +63,7 @@ function Feed() {
         </Description>
       </Post>
     ),
-    [],
+    [viewable],
   );
 
   const refreshList = useCallback(async () => {
@@ -78,6 +87,7 @@ function Feed() {
         onEndReachedThreshold={0.1}
         onRefresh={refreshList}
         refreshing={refreshing}
+        onViewableItemsChanged={handleViewableChanged}
         ListFooterComponent={loading && <Loading />}
         renderItem={renderItem}
       />
