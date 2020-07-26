@@ -16,6 +16,10 @@ run to start the static API:
 
 ### `yarn json-server server.json -d 1000 -w`
 
+if you are running on android device, is probable that's it does not recognize the localhost:3000, so run the following command to make the connection:
+
+### `adb reverse tcp:3000 tcp:3000`
+
 and then, to run the app:
 
 ### `react-native run-(android/ios)`
